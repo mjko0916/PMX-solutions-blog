@@ -25,4 +25,10 @@ library(ggforce)
 - PRED : population prediction  
 
 ## 1. Population/individual model predictions versus observations
+```{r}
+df <- read.table(./SDTABModel001.txt, skip=1, sep="")
+head(df)
+```
+
+
 
