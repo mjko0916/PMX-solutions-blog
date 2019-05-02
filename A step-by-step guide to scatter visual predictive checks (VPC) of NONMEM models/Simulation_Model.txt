@@ -1,0 +1,55 @@
+$PROBLEM 1 Compartment - Linear elimination - Proportional residual error
+
+$INPUT ID TIME AMT EVID DV CMT MDV
+
+$DATA VPC.Dataset.2018-06-24.csv IGNORE=I 
+
+
+$SUB ADVAN13 TOL=9
+
+$MODEL
+COMP=(DEPOT)
+COMP=(CENTRAL)
+
+$PK
+ka = THETA(1)*EXP(ETA(1))
+
+V1 = THETA(2)*EXP(ETA(2))
+
+CL = THETA(3)*EXP(ETA(3))
+
+k10 = CL/V1
+
+S2 = V1
+
+$DES
+DADT(1)= -ka*A(1)
+
+DADT(2)= ka*A(1) - k10*A(2)
+
+
+$ERROR
+IPRE = 0.00001
+IF(F.GT.0) IPRE = F
+Y = IPRE * (1 + EPS(1)) + EPS(2)
+
+$THETA
+(0,0.673) ; Absorption rate constant
+(0,14.3) ; Volume of distribution - central compartment
+(0,3.05) ; Clearance
+
+
+$OMEGA
+0.1
+0.0958
+0.0961
+
+
+$SIGMA
+0.106 ; Proportional
+0 FIX ; Additive
+
+$SIM (12345) ONLYSIMULATION SUBPROBLEMS=500
+
+$TABLE ID TIME DV CMT IPRE CPREDI CRESI CWRESI NOPRINT ONEHEADER FILE = SDTABSim1
+$TABLE ID ETAS(1:LAST) NOPRINT ONEHEADER FIRSTONLY FILE = PATABSim1
